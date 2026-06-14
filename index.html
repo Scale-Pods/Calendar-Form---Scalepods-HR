@@ -97,6 +97,7 @@
       margin-bottom: 28px;
     }
     #profileSection.hidden { display: none; }
+    #formCard.hidden { display: none; }
     .profile-left {
       display: flex;
       align-items: center;
@@ -1087,7 +1088,7 @@
 <!-- ===== STEP 1 — Premium Form ===== -->
 <div class="step form-step" id="step1">
   <img class="logo-top" src="https://www.scalepods.co/_next/image?url=%2Fscalepods-navbar-logo.png&w=256&q=75&dpl=dpl_2jQXMTMgbu5pmuszg3nbv3xXvryw" alt="ScalePods" />
-  <div class="form-card">
+  <div class="form-card" id="formCard">
 
     <!-- Profile Section -->
     <div class="profile-section" id="profileSection">
@@ -1380,6 +1381,7 @@
       showStep1();
     } else {
       document.getElementById('profileSection').classList.add('hidden');
+      document.getElementById('formCard').classList.add('hidden');
       const p = window.location.pathname.replace(/^\/+/, '').replace(/\/+$/, '');
       if (p) {
         const root = document.querySelector('.step.form-step');
