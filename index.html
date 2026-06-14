@@ -1,0 +1,1896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ScalePods — Schedule Your Interview</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      background: #050816;
+      position: relative;
+      color: #e6edf3;
+      overflow-x: hidden;
+    }
+
+    .step { display: none; }
+    .step.active { display: block; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes scaleIn { 0% { transform: scale(0); } 60% { transform: scale(1.08); } 100% { transform: scale(1); } }
+    @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(34,197,94,0.4); } 50% { box-shadow: 0 0 0 8px rgba(34,197,94,0); } }
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Animated gradient glow behind card */
+    .ambient-glow {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse 800px 500px at 30% 25%, rgba(37,99,235,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 600px 400px at 70% 40%, rgba(99,102,241,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 500px 500px at 50% 70%, rgba(139,92,246,0.06) 0%, transparent 60%);
+      animation: gradientShift 8s ease-in-out infinite alternate;
+      background-size: 200% 200%;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.02'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ===== STEP 1 — Premium Form ===== */
+    .form-step.active {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 32px 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .logo-top {
+      height: 36px;
+      width: auto;
+      filter: brightness(0) invert(1);
+      opacity: 0.9;
+      display: block;
+      margin: 0 auto 36px;
+    }
+
+    .form-card {
+      width: 100%;
+      max-width: 900px;
+      background: rgba(13,17,23,0.65);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border: 1px solid rgba(60,70,100,0.2);
+      border-radius: 24px;
+      box-shadow:
+        0 4px 6px -1px rgba(0,0,0,0.3),
+        0 12px 60px -8px rgba(0,0,0,0.5),
+        0 0 0 1px rgba(255,255,255,0.03) inset,
+        0 0 80px rgba(37,99,235,0.04);
+      padding: 48px 52px 44px;
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    /* --- Top Profile Section --- */
+    .profile-section {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 32px;
+      margin-bottom: 28px;
+    }
+    .profile-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .profile-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(135deg, #2563eb, #6366f1);
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+    }
+    .profile-avatar::before {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      padding: 2px;
+      background: conic-gradient(from 0deg, #3b82f6, #6366f1, #8b5cf6, #3b82f6);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      animation: gradientShift 3s linear infinite;
+      background-size: 200% 200%;
+    }
+    .profile-info { display: flex; flex-direction: column; gap: 2px; }
+    .profile-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #6b7280;
+      font-weight: 600;
+    }
+    .profile-name {
+      font-size: 20px;
+      font-weight: 700;
+      color: #f0f4f8;
+      letter-spacing: -0.3px;
+    }
+    .profile-subtitle {
+      font-size: 14px;
+      color: #6b7280;
+      font-weight: 400;
+    }
+    .profile-right {
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+    }
+    .profile-right .calendar-icon {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      background: rgba(59,130,246,0.06);
+      border: 1px solid rgba(59,130,246,0.12);
+      border-radius: 12px;
+      color: #93c5fd;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .profile-right .calendar-icon svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(60,70,100,0.3), transparent);
+      margin-bottom: 28px;
+    }
+
+    /* --- Main Content --- */
+    .form-header h1 {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 6px;
+      background: linear-gradient(135deg, #f0f4f8, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .form-header .subtitle {
+      color: #6b7280;
+      font-size: 15px;
+      margin-bottom: 32px;
+      line-height: 1.5;
+    }
+
+    /* --- Profile Badge (path-based) --- */
+    .profile-badge {
+      display: none;
+      align-items: center;
+      gap: 14px;
+      background: rgba(31,36,41,0.3);
+      border: 1px solid rgba(31,36,41,0.5);
+      border-radius: 14px;
+      padding: 16px 18px;
+      margin-bottom: 24px;
+    }
+    .profile-badge.show { display: flex; }
+    .pfp-avatar {
+      width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg, #2563eb, #3b82f6);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; font-weight: 700; color: #fff;
+      box-shadow: 0 0 0 2px rgba(59,130,246,0.2);
+    }
+    .pfp-info { flex: 1; min-width: 0; }
+    .pfp-name { font-size: 15px; font-weight: 600; color: #e6edf3; }
+    .pfp-role { display: none; }
+
+    /* --- Two-Column Form --- */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .form-grid .full-width {
+      grid-column: 1 / -1;
+    }
+
+    .input-group {
+      position: relative;
+      margin-bottom: 0;
+    }
+    .input-group svg.icon {
+      position: absolute; left: 20px; top: 50%; transform: translateY(-50%);
+      width: 20px; height: 20px; color: #484f58; pointer-events: none; z-index: 2; transition: color 0.2s;
+    }
+    .input-group:focus-within svg.icon { color: #3b82f6; }
+
+    .input-group input, .input-group select {
+      width: 100%; height: 64px;
+      padding: 20px 44px 0 54px;
+      font-size: 15px; font-family: inherit;
+      border: 1px solid rgba(60,70,100,0.2);
+      border-radius: 14px; outline: none;
+      background: rgba(18,24,34,0.6);
+      color: #e6edf3;
+      transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+    }
+    .input-group input::placeholder { color: transparent; }
+    .input-group input:focus, .input-group select:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.12), inset 0 2px 4px rgba(0,0,0,0.2);
+      background: rgba(13,17,23,0.7);
+    }
+
+    .input-group label {
+      position: absolute; left: 54px; top: 50%; transform: translateY(-50%);
+      font-size: 15px; color: #6b7280; pointer-events: none;
+      transition: all 0.2s ease; z-index: 1;
+    }
+    .input-group input:focus ~ label, .input-group input:not(:placeholder-shown) ~ label,
+    .input-group.has-value label, .input-group:focus-within label {
+      top: 12px; transform: translateY(0); font-size: 11px; color: #6b7280;
+    }
+    .input-group input:focus ~ label { color: #3b82f6; }
+    .input-group:focus-within label { color: #3b82f6; }
+
+    .input-group input:-webkit-autofill,
+    .input-group input:-webkit-autofill:hover,
+    .input-group input:-webkit-autofill:focus {
+      -webkit-box-shadow: 0 0 0 1000px rgba(18,24,34,0.9) inset !important;
+      -webkit-text-fill-color: #e6edf3 !important;
+      caret-color: #e6edf3;
+      border: 1px solid rgba(60,70,100,0.3);
+    }
+
+    /* Phone row adjustment */
+    .phone-row {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 0;
+    }
+    .phone-row > select {
+      width: 100%; height: 64px;
+      padding: 0 8px 0 14px;
+      border: 1px solid rgba(60,70,100,0.2);
+      border-right: none;
+      border-radius: 14px 0 0 14px;
+      font-size: 14px; font-family: inherit; cursor: pointer;
+      background: rgba(18,24,34,0.6);
+      color: #e6edf3; outline: none;
+      transition: border-color 0.25s;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+    }
+    .phone-row select:focus { border-color: #3b82f6; }
+    .phone-row select option {
+      background: #0d1123;
+      color: #e6edf3;
+    }
+    .phone-row .input-group { flex: 1; }
+    .phone-row .input-group input {
+      border-radius: 0 14px 14px 0;
+      padding-left: 50px;
+    }
+    .phone-row .input-group label { left: 50px; }
+    .phone-row .input-group svg.icon { left: 16px; }
+
+    .input-group select option {
+      background: #0d1123;
+      color: #e6edf3;
+    }
+
+    /* --- Custom Role Select --- */
+    .input-group .custom-select {
+      position: relative; width: 100%; height: 64px;
+      z-index: 3;
+    }
+    .input-group .custom-select-trigger {
+      display: flex; align-items: center; justify-content: space-between;
+      width: 100%; height: 64px;
+      padding: 20px 44px 0 54px;
+      font-size: 15px; font-family: inherit; cursor: pointer;
+      border: 1px solid rgba(60,70,100,0.2);
+      border-radius: 14px; outline: none;
+      background: rgba(18,24,34,0.6);
+      color: #e6edf3;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+      transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+      user-select: none;
+    }
+    .input-group .custom-select-trigger .value {
+      flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      color: #e6edf3;
+    }
+    .input-group .custom-select-trigger .value.placeholder { color: transparent; }
+    .input-group .custom-select-trigger .arrow {
+      width: 16px; height: 16px; color: #484f58; flex-shrink: 0;
+      transition: transform 0.25s ease;
+    }
+    .input-group .custom-select.open .custom-select-trigger {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.12), inset 0 2px 4px rgba(0,0,0,0.2);
+      background: rgba(13,17,23,0.7);
+    }
+    .input-group .custom-select.open .custom-select-trigger .arrow { transform: rotate(180deg); }
+    .input-group .custom-select-trigger:hover { border-color: rgba(59,130,246,0.4); }
+
+    .input-group .custom-select-menu {
+      position: absolute; top: calc(100% + 6px); left: 0; right: 0;
+      background: rgba(18,24,36,0.96);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(60,80,120,0.3);
+      border-radius: 14px;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.03) inset;
+      overflow: hidden;
+      opacity: 0; transform: translateY(-6px) scale(0.97);
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      max-height: 260px; overflow-y: auto;
+      z-index: 100;
+    }
+    .input-group .custom-select.open .custom-select-menu {
+      opacity: 1; transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+    .input-group .custom-select-menu .opt {
+      padding: 14px 16px 14px 54px;
+      font-size: 14px; color: #d0d5dd; cursor: pointer;
+      transition: background 0.12s ease, color 0.12s ease;
+      display: flex; align-items: center; gap: 10px;
+      position: relative;
+    }
+    .input-group .custom-select-menu .opt .check {
+      position: absolute; left: 22px; top: 50%; transform: translateY(-50%);
+      width: 15px; height: 15px; color: #3b82f6;
+      opacity: 0; transition: opacity 0.15s ease;
+    }
+    .input-group .custom-select-menu .opt.selected .check { opacity: 1; }
+    .input-group .custom-select-menu .opt:hover { background: rgba(59,130,246,0.12); color: #e6edf3; }
+    .input-group .custom-select-menu .opt.selected { color: #e6edf3; font-weight: 500; }
+    .input-group .custom-select-menu::-webkit-scrollbar { width: 4px; }
+    .input-group .custom-select-menu::-webkit-scrollbar-track { background: transparent; }
+    .input-group .custom-select-menu::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 2px; }
+
+    /* --- CTA Button --- */
+    .btn-primary {
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      width: 100%; height: 64px; margin-top: 20px;
+      font-size: 17px; font-weight: 600; font-family: inherit;
+      color: #fff; border: none; border-radius: 16px; cursor: pointer;
+      background: linear-gradient(135deg, #2563eb, #6366f1);
+      box-shadow: 0 4px 20px rgba(37,99,235,0.3), 0 0 40px rgba(99,102,241,0.1);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      letter-spacing: 0.3px;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(37,99,235,0.4), 0 0 60px rgba(99,102,241,0.15);
+    }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-primary .arrow { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: inline-block; }
+    .btn-primary:hover .arrow { transform: translateX(5px); }
+
+    /* --- Secure Footer --- */
+    .secure-footer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 24px;
+      font-size: 12px;
+      color: #4b5563;
+    }
+    .secure-footer svg { width: 14px; height: 14px; color: #4b5563; flex-shrink: 0; }
+
+    /* ===== STEP 2 — World-Class Scheduling ===== */
+    .calendar-step.active {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sched2 {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      max-width: 1040px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 0 24px;
+    }
+
+    /* Progress Bar */
+    .sched-progress {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 0 12px;
+      font-size: 12px;
+      color: #4b5563;
+      letter-spacing: 0.3px;
+    }
+    .sched-progress .step-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .sched-progress .step-label .num {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: rgba(59,130,246,0.15);
+      color: #3b82f6;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700;
+    }
+    .sched-progress .step-label .num.active {
+      background: linear-gradient(135deg, #2563eb, #6366f1);
+      color: #fff;
+    }
+    .sched-progress .step-label .num.done {
+      background: #22c55e;
+      color: #fff;
+    }
+    .sched-progress .step-dots {
+      display: flex;
+      gap: 6px;
+    }
+    .sched-progress .step-dots span {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #1f2937;
+    }
+    .sched-progress .step-dots span.filled { background: #3b82f6; }
+
+    /* Top Logo */
+    .sched2-logo {
+      text-align: center;
+      padding: 16px 0 4px;
+    }
+    .sched2-logo img {
+      height: 28px;
+      width: auto;
+      filter: brightness(0) invert(1);
+      opacity: 0.65;
+    }
+
+    /* Interviewer Hero */
+    .interviewer-hero {
+      background: rgba(13,17,23,0.55);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(60,80,120,0.15);
+      border-radius: 20px;
+      padding: 24px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+    }
+    .interviewer-hero-left {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+    .interviewer-hero-avatar {
+      width: 56px; height: 56px; border-radius: 50%; flex-shrink: 0;
+      position: relative;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; font-weight: 700; color: #fff;
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+    }
+    .interviewer-hero-avatar::before {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border-radius: 50%;
+      padding: 2px;
+      background: conic-gradient(from 0deg, #3b82f6, #7c3aed, #a855f7, #3b82f6);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      animation: gradientShift 3s linear infinite;
+      background-size: 200% 200%;
+    }
+    .interviewer-hero-info { display: flex; flex-direction: column; gap: 2px; }
+    .interviewer-hero-info .label {
+      font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px;
+      color: #6b7280; font-weight: 600;
+    }
+    .interviewer-hero-info .name {
+      font-size: 18px; font-weight: 700; color: #f0f4f8; letter-spacing: -0.2px;
+    }
+    .interviewer-hero-info .status {
+      font-size: 12px; color: #22c55e; display: flex; align-items: center; gap: 4px;
+    }
+    .interviewer-hero-right {
+      text-align: right;
+      display: flex; flex-direction: column; align-items: flex-end; gap: 8px;
+    }
+    .interviewer-hero-right .tagline {
+      color: #6b7280; font-size: 13px;
+    }
+
+    /* Info Chips */
+    .info-chips {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 2px;
+    }
+    .info-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 12px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(60,80,120,0.12);
+      border-radius: 20px;
+      color: #94a3b8;
+      font-size: 12px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .info-chip svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+    /* Main Scheduling Body */
+    .sched2-body {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 24px;
+      flex: 1;
+      padding-bottom: 100px;
+    }
+
+    /* Calendar Card */
+    .cal-card {
+      background: rgba(13,17,23,0.45);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(60,80,120,0.12);
+      border-radius: 20px;
+      padding: 28px 28px 24px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+    }
+
+    .cal-card .month-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      padding: 0 2px;
+    }
+    .cal-card .month-nav h2 {
+      font-size: 18px; font-weight: 700; letter-spacing: -0.2px;
+      background: linear-gradient(135deg, #f0f4f8, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .cal-card .nav-btns { display: flex; gap: 6px; }
+    .cal-card .nav-btns button {
+      width: 34px; height: 34px; border-radius: 10px;
+      border: 1px solid rgba(60,80,120,0.12);
+      background: rgba(255,255,255,0.03);
+      color: #6b7280; cursor: pointer; font-size: 16px;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+    }
+    .cal-card .nav-btns button:hover {
+      border-color: rgba(59,130,246,0.3);
+      background: rgba(59,130,246,0.08);
+      color: #93c5fd;
+    }
+
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 2px;
+      margin-bottom: 16px;
+    }
+    .cal-header {
+      text-align: center;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #4b5563;
+      padding: 8px 0 6px;
+    }
+    .cal-day {
+      aspect-ratio: 1;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 500;
+      color: #374151;
+      cursor: default;
+      transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      gap: 1px;
+    }
+    .cal-day.other-month { color: #1f2937; }
+    .cal-day.available {
+      color: #e2e8f0;
+      cursor: pointer;
+    }
+    .cal-day.available:hover {
+      background: rgba(59,130,246,0.1);
+      transform: scale(1.06);
+    }
+    .cal-day.available .avail-dot {
+      width: 4px; height: 4px; border-radius: 50%;
+      background: #3b82f6;
+      opacity: 0.5;
+    }
+    .cal-day.selected {
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      color: #fff;
+      font-weight: 600;
+      box-shadow: 0 4px 16px rgba(99,102,241,0.35);
+      transform: scale(1.04);
+    }
+    .cal-day.selected .day-num { color: #fff; }
+    .cal-day.selected .avail-dot { background: rgba(255,255,255,0.7); opacity: 1; }
+    .cal-day.today {
+      box-shadow: inset 0 0 0 1.5px rgba(99,102,241,0.4);
+    }
+
+    .cal-tz-note {
+      font-size: 11px;
+      color: #4b5563;
+      text-align: center;
+      padding: 6px 12px;
+      background: rgba(255,255,255,0.02);
+      border-radius: 8px;
+      border: 1px solid rgba(60,80,120,0.08);
+    }
+
+    /* Time Slots Panel */
+    .time-panel {
+      background: rgba(13,17,23,0.45);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(60,80,120,0.12);
+      border-radius: 20px;
+      padding: 24px 20px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      max-height: 520px;
+    }
+
+    .time-panel-header {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .time-panel-header .time-date-badge {
+      font-size: 13px;
+      font-weight: 600;
+      color: #e2e8f0;
+    }
+    .time-panel-header .time-hint {
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    .time-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    .time-grid::-webkit-scrollbar { width: 3px; }
+    .time-grid::-webkit-scrollbar-track { background: transparent; }
+    .time-grid::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.06); border-radius: 2px; }
+
+    .time-btn {
+      height: 48px;
+      border-radius: 12px;
+      border: 1px solid rgba(60,80,120,0.12);
+      background: rgba(255,255,255,0.02);
+      color: #94a3b8;
+      font-size: 14px;
+      font-family: inherit;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+      width: 100%;
+    }
+    .time-btn:hover {
+      border-color: rgba(59,130,246,0.35);
+      color: #e2e8f0;
+      background: rgba(59,130,246,0.07);
+      transform: translateY(-1px);
+    }
+    .time-btn.selected {
+      border-color: #3b82f6;
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(99,102,241,0.25);
+    }
+
+    /* Back Button */
+    .sched2-back-wrap {
+      text-align: center;
+      margin-top: 8px;
+    }
+    .sched2-back {
+      background: none; border: none; color: #4b5563;
+      font-size: 12px; font-family: inherit; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px;
+      transition: color 0.2s, gap 0.2s;
+      border-radius: 8px;
+    }
+    .sched2-back:hover { color: #93c5fd; gap: 8px; background: rgba(255,255,255,0.02); }
+
+    /* Sticky Confirm Bar */
+    .sched2-confirm {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 40;
+      background: rgba(8,12,20,0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(60,80,120,0.15);
+      padding: 16px 24px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+    }
+    .sched2-confirm.show { display: flex; }
+    .sched2-confirm-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      width: 100%;
+      max-width: 1040px;
+    }
+    .sched2-confirm .confirm-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .sched2-confirm .confirm-info .confirm-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: rgba(59,130,246,0.1);
+      display: flex; align-items: center; justify-content: center;
+      color: #3b82f6; flex-shrink: 0;
+    }
+    .sched2-confirm .confirm-info .confirm-icon svg { width: 18px; height: 18px; }
+    .sched2-confirm .confirm-info .confirm-text {
+      font-size: 13px; color: #94a3b8;
+    }
+    .sched2-confirm .confirm-info .confirm-text strong {
+      color: #e2e8f0; font-weight: 600;
+    }
+    .sched2-confirm .confirm-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .btn-confirm {
+      height: 48px; padding: 0 32px;
+      font-size: 14px; font-weight: 600; font-family: inherit;
+      color: #fff; border: none; border-radius: 12px; cursor: pointer;
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      box-shadow: 0 4px 20px rgba(99,102,241,0.3);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      letter-spacing: 0.2px;
+      white-space: nowrap;
+    }
+    .btn-confirm:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(99,102,241,0.4); }
+    .btn-confirm:disabled { opacity: 0.3; cursor: not-allowed; transform: none !important; }
+    .btn-skip {
+      background: none; border: none; color: #4b5563;
+      font-size: 12px; font-family: inherit; cursor: pointer;
+      padding: 8px 12px; border-radius: 8px;
+      transition: color 0.2s; white-space: nowrap;
+    }
+    .btn-skip:hover { color: #93c5fd; background: rgba(255,255,255,0.02); }
+
+    /* ===== STEP 3 — Success ===== */
+    .success-step.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 24px 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .success-card {
+      width: 100%;
+      max-width: 480px;
+      background: rgba(13,17,23,0.65);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border: 1px solid rgba(60,70,100,0.2);
+      border-radius: 24px;
+      box-shadow:
+        0 4px 6px -1px rgba(0,0,0,0.3),
+        0 12px 60px -8px rgba(0,0,0,0.5),
+        0 0 0 1px rgba(255,255,255,0.03) inset;
+      padding: 48px 44px 44px;
+      text-align: center;
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    .check-circle {
+      width: 72px; height: 72px; border-radius: 50%; margin: 0 auto 20px;
+      background: rgba(34,197,94,0.1);
+      display: flex; align-items: center; justify-content: center;
+      animation: scaleIn 0.4s ease-out;
+      box-shadow: 0 0 40px rgba(34,197,94,0.08);
+    }
+    .check-circle svg { width: 36px; height: 36px; color: #22c55e; }
+
+    .success-card h2 {
+      font-size: 24px; font-weight: 700; margin-bottom: 4px;
+      background: linear-gradient(135deg, #f0f4f8, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .success-card .subtitle { color: #6b7280; font-size: 14px; margin-bottom: 0; }
+
+    .success-details {
+      margin: 24px auto 0;
+      background: rgba(31,36,41,0.2);
+      border: 1px solid rgba(60,70,100,0.15);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: left;
+    }
+    .success-details .row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 0; border-bottom: 1px solid rgba(31,36,41,0.3);
+    }
+    .success-details .row:last-child { border-bottom: none; }
+    .success-details .lbl { font-size: 13px; color: #6b7280; }
+    .success-details .val { font-size: 14px; color: #e6edf3; font-weight: 500; text-align: right; }
+
+    .btn-success { margin-top: 24px; }
+
+    /* ===== ADMIN PANEL ===== */
+    #sectionAdmin { display: none; }
+    #sectionAdmin.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 24px 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .admin-card {
+      width: 100%;
+      max-width: 780px;
+      background: rgba(13,17,23,0.65);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border: 1px solid rgba(60,70,100,0.2);
+      border-radius: 24px;
+      box-shadow:
+        0 4px 6px -1px rgba(0,0,0,0.3),
+        0 12px 60px -8px rgba(0,0,0,0.5);
+      padding: 36px 40px;
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .admin-header h2 { font-size: 20px; font-weight: 700; }
+
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; padding: 12px 14px; border-bottom: 1px solid rgba(31,36,41,0.5); color: #d1d5db; font-size: 13px; }
+    th { color: #6b7280; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+    td a { color: #3b82f6; text-decoration: none; }
+    td a:hover { text-decoration: underline; }
+    .tag { display: inline-block; padding: 3px 10px; background: rgba(31,36,41,0.5); border-radius: 4px; font-size: 12px; color: #9ca3af; }
+    .btn-sm {
+      width: auto; padding: 8px 16px; font-size: 13px; font-weight: 600; font-family: inherit;
+      color: #fff; background: transparent; border: 1px solid rgba(60,70,100,0.3);
+      border-radius: 10px; cursor: pointer; transition: all 0.2s;
+    }
+    .btn-sm:hover { background: rgba(255,255,255,0.06); border-color: #3b82f6; }
+
+    .admin-badge {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      background: rgba(26,45,74,0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(59,130,246,0.4);
+      border-radius: 10px;
+      padding: 8px 16px;
+      z-index: 100;
+    }
+    .admin-badge.show { display: flex; }
+    .admin-badge span { color: #93c5fd; font-size: 12px; font-weight: 500; }
+    .admin-badge button {
+      font-size: 12px; padding: 4px 12px; border-radius: 6px;
+      background: #3b82f6; border: none; color: #fff; cursor: pointer; font-family: inherit; font-weight: 500;
+    }
+    .admin-badge button:hover { background: #2563eb; }
+
+    .hidden { display: none !important; }
+
+    /* ===== TETRIS LOADER ===== */
+    .tetris-loader {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: #050816;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+    .tetris-loader.active { display: flex; }
+    .tetris-loader-inner { text-align: center; }
+    .tetris-board {
+      display: inline-flex;
+      flex-direction: column;
+      border: 2px solid rgba(255,255,255,0.12);
+      background: rgba(0,0,0,0.4);
+      border-radius: 4px;
+      padding: 2px;
+      margin-bottom: 24px;
+    }
+    .tetris-row { display: flex; }
+    .tetris-cell {
+      width: 16px; height: 16px;
+      border: 1px solid rgba(255,255,255,0.04);
+      background: rgba(255,255,255,0.02);
+      transition: background 0.08s;
+    }
+    .tetris-cell.filled {
+      background: rgba(255,255,255,0.9);
+      border-color: rgba(255,255,255,0.1);
+      box-shadow: 0 0 6px rgba(255,255,255,0.2);
+    }
+    .tetris-cell.clearing { animation: tetrisFlash 0.2s ease-out; }
+    @keyframes tetrisFlash {
+      0% { background: rgba(255,255,255,0.9); }
+      50% { background: rgba(255,255,255,0.3); }
+      100% { background: transparent; }
+    }
+    .tetris-loader-text {
+      color: #6b7280;
+      font-size: 14px;
+      font-weight: 500;
+      animation: tetrisPulse 1.5s ease-in-out infinite;
+    }
+    @keyframes tetrisPulse {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 1; }
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1200px) {
+      .sched2-body { grid-template-columns: minmax(0, 340px) 1fr; gap: 24px; }
+      .cal-card { padding: 24px; }
+      .time-panel { padding: 24px; }
+    }
+    @media (max-width: 1024px) {
+      .interviewer-hero { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .interviewer-hero-right { width: 100%; }
+      .info-chips { flex-wrap: wrap; }
+      .sched2-progress { gap: 10px; }
+      .sched2-confirm-inner { flex-direction: column; gap: 12px; align-items: stretch; text-align: center; }
+      .confirm-info { flex-direction: column; align-items: center; }
+      .confirm-actions { justify-content: center; }
+    }
+    @media (max-width: 900px) {
+      .sched2-body { grid-template-columns: 1fr; }
+      .time-panel { border-left: none; border-top: 1px solid rgba(255,255,255,0.06); }
+      .sched2-back-wrap { display: block; }
+    }
+    @media (max-width: 768px) {
+      .form-card { padding: 36px 28px 32px; }
+      .form-grid { grid-template-columns: 1fr; gap: 14px; }
+      .profile-section { flex-direction: column; align-items: flex-start; gap: 16px; }
+      .profile-right { align-items: flex-start; width: 100%; }
+      .profile-right .calendar-icon { width: 100%; justify-content: center; }
+      .form-header h1 { font-size: 22px; }
+      .phone-row { grid-template-columns: 120px 1fr; }
+      .success-card { padding: 36px 24px 32px; }
+    }
+    @media (max-width: 480px) {
+      .form-card { padding: 24px 16px 24px; border-radius: 20px; }
+      .form-header h1 { font-size: 20px; }
+      .form-header .subtitle { font-size: 13px; margin-bottom: 24px; }
+      .input-group input, .input-group .custom-select-trigger, .phone-row select { height: 56px; font-size: 14px; }
+      .input-group input, .input-group .custom-select-trigger { padding: 16px 38px 0 46px; }
+      .input-group label { left: 46px; font-size: 14px; }
+      .input-group svg.icon { left: 14px; width: 18px; height: 18px; }
+      .phone-row select { width: 120px; padding: 0 4px 0 10px; font-size: 12px; }
+      .phone-row .input-group input { padding-left: 44px; }
+      .phone-row .input-group label { left: 44px; }
+      .phone-row .input-group svg.icon { left: 14px; }
+      .btn-primary { height: 56px; font-size: 15px; }
+      .profile-avatar { width: 52px; height: 52px; font-size: 22px; }
+      .profile-name { font-size: 17px; }
+      .input-group .custom-select-trigger { padding: 16px 38px 0 46px; }
+      .input-group .custom-select-menu .opt { padding: 12px 14px 12px 46px; font-size: 13px; }
+      .logo-top { height: 28px; margin-bottom: 28px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="ambient-glow"></div>
+
+<!-- Admin Badge -->
+<div class="admin-badge" id="adminBadge">
+  <span>Admin</span>
+  <button onclick="showAdminPanel()">Panel</button>
+</div>
+
+<!-- ===== STEP 1 — Premium Form ===== -->
+<div class="step form-step" id="step1">
+  <img class="logo-top" src="https://www.scalepods.co/_next/image?url=%2Fscalepods-navbar-logo.png&w=256&q=75&dpl=dpl_2jQXMTMgbu5pmuszg3nbv3xXvryw" alt="ScalePods" />
+  <div class="form-card">
+
+    <!-- Profile Section -->
+    <div class="profile-section">
+      <div class="profile-left">
+        <div class="profile-avatar">R</div>
+        <div class="profile-info">
+          <span class="profile-label">Interviewer</span>
+          <span class="profile-name" id="formIntervieweName">Raunak</span>
+          <span class="profile-subtitle">Looking forward to connecting with you.</span>
+        </div>
+      </div>
+      <div class="profile-right">
+        <div class="calendar-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Let's find a time that works for both of us.
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Form Header -->
+    <div class="form-header">
+      <h1>Schedule Your Interview</h1>
+      <p class="subtitle">Select a convenient time slot to connect.</p>
+    </div>
+
+    <!-- Profile Badge (path-based pages) -->
+    <div class="profile-badge" id="profileBadge">
+      <div class="pfp-avatar" id="pfpAvatar">A</div>
+      <div class="pfp-info">
+        <div class="pfp-name" id="pfpName">Adnan</div>
+        <div class="pfp-role" id="pfpRole">Sales Team</div>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <form id="bookingForm" novalidate>
+      <div class="form-grid">
+        <div class="input-group">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <input type="text" id="name" placeholder="First Name" required>
+          <label>First Name</label>
+        </div>
+        <div class="input-group">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <input type="text" id="surname" placeholder="Last Name" required>
+          <label>Last Name</label>
+        </div>
+        <div class="input-group full-width">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          <input type="email" id="email" placeholder="Email" required>
+          <label>Email Address</label>
+        </div>
+        <div class="input-group full-width phone-row">
+          <select id="countryCode">
+            <option value="+1">🇺🇸 +1</option>
+            <option value="+44">🇬🇧 +44</option>
+            <option value="+91" selected>🇮🇳 +91</option>
+            <option value="+61">🇦🇺 +61</option>
+            <option value="+81">🇯🇵 +81</option>
+            <option value="+86">🇨🇳 +86</option>
+            <option value="+49">🇩🇪 +49</option>
+            <option value="+33">🇫🇷 +33</option>
+            <option value="+971">🇦🇪 +971</option>
+          </select>
+          <div class="input-group">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            <input type="tel" id="phone" placeholder="Phone" required>
+            <label>Phone Number</label>
+          </div>
+        </div>
+        <div class="input-group full-width" id="roleGroup">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          <select id="role" required style="display:none"><option value="" disabled selected></option></select>
+          <div class="custom-select" id="customRoleSelect" tabindex="0">
+            <div class="custom-select-trigger">
+              <span class="value placeholder"></span>
+              <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="custom-select-menu" id="customRoleMenu"></div>
+          </div>
+          <label>Role / Campaign</label>
+        </div>
+      </div>
+      <button type="submit" class="btn-primary">Continue <span class="arrow">→</span></button>
+    </form>
+
+    <!-- Secure Footer -->
+    <div class="secure-footer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      Your information is secure and used only for scheduling purposes.
+    </div>
+
+  </div>
+</div>
+
+<!-- Tetris Loader -->
+<div class="tetris-loader" id="tetrisLoader">
+  <div class="tetris-loader-inner">
+    <div id="tetrisBoard" class="tetris-board"></div>
+    <p class="tetris-loader-text">Loading availability...</p>
+  </div>
+</div>
+
+<!-- ===== STEP 2 — World-Class Scheduling ===== -->
+<div class="step calendar-step" id="step2">
+  <div class="sched2">
+
+    <!-- Progress -->
+    <div class="sched2-logo">
+      <img src="https://www.scalepods.co/_next/image?url=%2Fscalepods-navbar-logo.png&w=256&q=75&dpl=dpl_2jQXMTMgbu5pmuszg3nbv3xXvryw" alt="ScalePods" />
+    </div>
+    <div class="sched-progress">
+      <div class="step-label">
+        <span class="num done">✓</span>
+        <span>Your Details</span>
+      </div>
+      <div class="step-dots"><span class="filled"></span><span class="filled"></span></div>
+      <div class="step-label">
+        <span class="num active">2</span>
+        <span>Select Interview Time</span>
+      </div>
+    </div>
+
+    <!-- Interviewer Hero -->
+    <div class="interviewer-hero">
+      <div class="interviewer-hero-left">
+        <div class="interviewer-hero-avatar" id="sched2Avatar">R</div>
+        <div class="interviewer-hero-info">
+          <span class="label">Interviewer</span>
+          <span class="name" id="sched2Name">Raunak</span>
+          <span class="status">🟢 Available this week</span>
+        </div>
+      </div>
+      <div class="interviewer-hero-right">
+        <div class="tagline">Select a time that works best for you</div>
+        <div class="info-chips">
+          <span class="info-chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            30 Minutes
+          </span>
+          <span class="info-chip" id="sched2TzChip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            <span id="tzLabel2"></span>
+          </span>
+          <span class="info-chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            Google Meet
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Body: Calendar + Time -->
+    <div class="sched2-body">
+      <div class="cal-card">
+        <div class="month-nav">
+          <h2 id="monthTitle2">June 2026</h2>
+          <div class="nav-btns">
+            <button onclick="prevMonth()">‹</button>
+            <button onclick="nextMonth()">›</button>
+          </div>
+        </div>
+        <div class="cal-grid" id="calGrid"></div>
+        <div class="cal-tz-note" id="calTzNote">Times shown in <span id="tzLabel3"></span></div>
+      </div>
+
+      <div class="time-panel" id="timePanel">
+        <div class="time-panel-header">
+          <span class="time-date-badge" id="timeDateBadge">Select a date</span>
+          <span class="time-hint" id="timeHint">Pick a date to see available times.</span>
+        </div>
+        <div class="time-grid" id="timeGrid">
+          <div style="text-align:center;color:#4b5563;padding:32px 0;font-size:13px;">Available times will appear here</div>
+        </div>
+        <div class="sched2-back-wrap">
+          <button class="sched2-back" onclick="showStep1()">← Back to details</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sticky Confirm Bar -->
+  <div class="sched2-confirm" id="confirmBar">
+    <div class="sched2-confirm-inner">
+      <div class="confirm-info">
+        <div class="confirm-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+        <div class="confirm-text">Selected: <strong id="confirmDateLabel">—</strong> at <strong id="confirmTimeLabel">—</strong> <span id="confirmTzLabel"></span></div>
+      </div>
+      <div class="confirm-actions">
+        <button class="btn-skip" onclick="showStep1()">← Back</button>
+        <button class="btn-confirm" id="confirmBtn" onclick="confirmBooking()" disabled>Confirm Interview →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== STEP 3 — Success ===== -->
+<div class="step success-step" id="step3">
+  <div class="success-card">
+    <div class="check-circle">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <h2>Booking Confirmed!</h2>
+    <p class="subtitle">Your interview has been scheduled.</p>
+    <div class="success-details" id="successDetails"></div>
+    <button class="btn-primary btn-success" onclick="backToForm()">Book Another →</button>
+  </div>
+</div>
+
+<!-- ===== ADMIN PANEL ===== -->
+<div class="step" id="sectionAdmin">
+  <div class="admin-card">
+    <div class="admin-header">
+      <h2>Admin Panel</h2>
+      <button class="btn-sm" onclick="logoutAdmin()">Logout</button>
+    </div>
+    <p style="color:#6b7280;font-size:13px;margin-bottom:16px;">Interviewers and their booking links</p>
+    <table>
+      <thead><tr><th>Name</th><th>Email</th><th>Booking URL</th><th>Campaign</th></tr></thead>
+      <tbody id="interviewerTableBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  const ROLE_URL = 'https://n8n.srv1711190.hstgr.cloud/webhook/f1f73fff-1311-4fb6-8ed6-ea7efa1cb6c3?action=Campaigns';
+  const SLOTS_URL = 'https://n8n.srv1711190.hstgr.cloud/webhook/78709684-d30a-4cdb-9ada-616536ea2f5e';
+  const BOOK_URL = 'https://n8n.srv1711190.hstgr.cloud/webhook/b91d7ddb-0f62-4b38-96d3-fd43f6a644e1';
+  const ADMIN_NAME = 'Mithul';
+  const ADMIN_SURNAME = 'CE';
+  const ADMIN_EMAIL = 'mithul6724@gmail.com';
+
+  const INTERVIEWERS = [
+    { name: 'Adnan', email: 'adnan@scalepods.co', slug: 'a7x3k9m2', campaign: 'Sales' },
+    { name: 'Raunak', email: 'raunak@scalepods.co', slug: 'q5p8r1n4', campaign: 'Sales' },
+    { name: 'Raunak Tech', email: 'raunak@scalepods.tech', slug: 't2w6b0d9', campaign: 'Test 1' },
+    { name: 'Palashy', email: 'palashy@scalepods.co', slug: 'm4j7c3v1', campaign: 'Test' },
+  ];
+
+  let campaigns = [];
+  let pathInterviewer = null;
+  let availableSlots = [];
+  let selectedSlot = null;
+  let currentViewMonth = null;
+  let currentViewYear = null;
+
+  const form = document.getElementById('bookingForm');
+  const roleSelect = document.getElementById('role');
+  const step1 = document.getElementById('step1');
+  const step2 = document.getElementById('step2');
+  const step3 = document.getElementById('step3');
+  const sectionAdmin = document.getElementById('sectionAdmin');
+  const adminBadge = document.getElementById('adminBadge');
+  const nameInput = document.getElementById('name');
+  const surnameInput = document.getElementById('surname');
+  const emailInput = document.getElementById('email');
+  const interviewerBody = document.getElementById('interviewerTableBody');
+  const calGrid = document.getElementById('calGrid');
+  const monthTitle = document.getElementById('monthTitle2');
+
+  function parseSlotDate(str) {
+    const p = str.split('/');
+    if (p.length === 3) return new Date(p[2], p[1] - 1, p[0], 12, 0, 0);
+    return new Date(str + 'T12:00:00');
+  }
+  function fmtDateLong(d) { return d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }); }
+  function fmtDateShort(d) { return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); }
+  function dateKey(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+
+  try {
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    document.getElementById('tzLabel2').textContent = tz;
+    document.getElementById('tzLabel3').textContent = tz;
+  } catch(e) {}
+
+  function resolvePathInterviewer() {
+    const path = window.location.pathname.replace(/^\/+/, '').replace(/\/+$/, '');
+    if (!path) return null;
+    return INTERVIEWERS.find(i => i.slug === path) || null;
+  }
+
+  function initPathRouting() {
+    pathInterviewer = resolvePathInterviewer();
+    if (pathInterviewer) {
+      applyProfile(pathInterviewer);
+      showStep1();
+    } else {
+      const p = window.location.pathname.replace(/^\/+/, '').replace(/\/+$/, '');
+      if (p) {
+        const root = document.querySelector('.step.form-step');
+        if (root) root.style.display = 'none';
+        const msg = document.createElement('div');
+        msg.style.cssText = 'text-align:center;padding:60px 20px;color:#ef4444;font-size:16px;font-weight:600;position:relative;z-index:1;';
+        msg.innerHTML = 'No interviewer matches "' + p + '"<br><a href="/" style="color:#3b82f6;font-weight:400;font-size:14px;text-decoration:none;">← Back to booking</a>';
+        document.body.appendChild(msg);
+      } else {
+        showStep1();
+      }
+    }
+  }
+
+  function setRoleSelection(value) {
+    roleSelect.value = value || '';
+    const trigger = document.querySelector('.custom-select-trigger .value');
+    const items = document.querySelectorAll('.custom-select-menu .opt');
+    const opt = Array.from(roleSelect.options).find(o => o.value === value);
+    trigger.textContent = opt ? opt.textContent : (value || '');
+    trigger.classList.toggle('placeholder', !value);
+    items.forEach(el => el.classList.toggle('selected', el.dataset.value === value));
+    document.getElementById('roleGroup').classList.toggle('has-value', !!value);
+  }
+
+  function applyProfile(i) {
+    const initial = i.name.charAt(0).toUpperCase();
+    document.getElementById('pfpAvatar').textContent = initial;
+    document.getElementById('pfpName').textContent = i.name;
+    document.getElementById('pfpRole').textContent = (i.campaign || 'Unassigned') + ' Team';
+    document.getElementById('sched2Avatar').textContent = initial;
+    document.getElementById('sched2Name').textContent = i.name;
+    document.getElementById('profileBadge').classList.add('show');
+    setRoleSelection(i.campaign);
+  }
+
+  function checkAdmin() {
+    const m = nameInput.value.trim().toLowerCase() === ADMIN_NAME.toLowerCase() &&
+             surnameInput.value.trim().toLowerCase() === ADMIN_SURNAME.toLowerCase() &&
+             emailInput.value.trim().toLowerCase() === ADMIN_EMAIL.toLowerCase();
+    adminBadge.classList.toggle('show', m);
+  }
+  nameInput.addEventListener('input', checkAdmin);
+  surnameInput.addEventListener('input', checkAdmin);
+  emailInput.addEventListener('input', checkAdmin);
+
+  const customRole = document.getElementById('customRoleSelect');
+  const customMenu = document.getElementById('customRoleMenu');
+
+  function buildCustomMenu() {
+    customMenu.innerHTML = '';
+    Array.from(roleSelect.options).forEach(o => {
+      if (!o.value) return;
+      const item = document.createElement('div');
+      item.className = 'opt';
+      item.dataset.value = o.value;
+      item.innerHTML = '<svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>' + o.textContent + '</span>';
+      item.addEventListener('click', function(e) {
+        e.stopPropagation();
+        setRoleSelection(this.dataset.value);
+        closeCustomSelect();
+        roleSelect.dispatchEvent(new Event('change', { bubbles: true }));
+      });
+      customMenu.appendChild(item);
+    });
+    if (roleSelect.value) setRoleSelection(roleSelect.value);
+  }
+
+  function openCustomSelect() {
+    customRole.classList.add('open');
+    customRole.setAttribute('aria-expanded', 'true');
+  }
+  function closeCustomSelect() {
+    customRole.classList.remove('open');
+    customRole.setAttribute('aria-expanded', 'false');
+  }
+  function toggleCustomSelect() {
+    if (customRole.classList.contains('open')) closeCustomSelect();
+    else openCustomSelect();
+  }
+
+  customRole.addEventListener('click', toggleCustomSelect);
+  document.addEventListener('click', function(e) {
+    if (!customRole.contains(e.target)) closeCustomSelect();
+  });
+
+  fetch(ROLE_URL).then(r => r.json()).then(res => {
+    campaigns = res.data ?? res;
+    roleSelect.innerHTML = '<option value="" disabled selected></option>';
+    campaigns.forEach(c => {
+      const o = document.createElement('option');
+      o.value = c.CampaignName; o.textContent = c.CampaignName;
+      roleSelect.appendChild(o);
+    });
+    buildCustomMenu();
+    initPathRouting();
+  }).catch(() => {
+    roleSelect.innerHTML = '<option value="" disabled selected></option>';
+    buildCustomMenu();
+    initPathRouting();
+  });
+
+  function showStep1() {
+    step1.classList.add('active');
+    step2.classList.remove('active');
+    step3.classList.remove('active');
+    sectionAdmin.classList.remove('active');
+  }
+
+  function showStep2() {
+    step1.classList.remove('active');
+    step2.classList.add('active');
+    step3.classList.remove('active');
+    sectionAdmin.classList.remove('active');
+  }
+
+  function showStep3() {
+    step1.classList.remove('active');
+    step2.classList.remove('active');
+    step3.classList.add('active');
+    sectionAdmin.classList.remove('active');
+  }
+
+  const TETRIS_PIECES = [
+    { shape: [[1,1,1,1]] },
+    { shape: [[1,1],[1,1]] },
+    { shape: [[0,1,0],[1,1,1]] },
+    { shape: [[1,0],[1,0],[1,1]] },
+    { shape: [[0,1,1],[1,1,0]] },
+    { shape: [[1,1,0],[0,1,1]] },
+    { shape: [[0,1],[0,1],[1,1]] },
+  ];
+  const TETRIS_WIDTH = 10, TETRIS_HEIGHT = 16;
+  let tetrisGrid = [], tetrisFalling = null, tetrisRAF = null, tetrisLastTime = 0, tetrisBoard = null;
+
+  function tetrisRotate(shape) {
+    const rows = shape.length, cols = shape[0].length;
+    const r = Array(cols).fill().map(() => Array(rows).fill(0));
+    for (let i = 0; i < rows; i++) for (let j = 0; j < cols; j++) r[j][rows-1-i] = shape[i][j];
+    return r;
+  }
+
+  function tetrisNewPiece() {
+    const pd = TETRIS_PIECES[Math.floor(Math.random() * TETRIS_PIECES.length)];
+    let shape = pd.shape;
+    for (let i = Math.floor(Math.random() * 4); i > 0; i--) shape = tetrisRotate(shape);
+    return { shape, x: Math.floor(Math.random() * (TETRIS_WIDTH - shape[0].length)), y: -shape.length };
+  }
+
+  function tetrisCanPlace(piece, nx, ny) {
+    for (let r = 0; r < piece.shape.length; r++)
+      for (let c = 0; c < piece.shape[r].length; c++)
+        if (piece.shape[r][c]) {
+          const gx = nx + c, gy = ny + r;
+          if (gx < 0 || gx >= TETRIS_WIDTH || gy >= TETRIS_HEIGHT) return false;
+          if (gy >= 0 && tetrisGrid[gy][gx]) return false;
+        }
+    return true;
+  }
+
+  function tetrisPlace(piece) {
+    for (let r = 0; r < piece.shape.length; r++)
+      for (let c = 0; c < piece.shape[r].length; c++)
+        if (piece.shape[r][c]) {
+          const gx = piece.x + c, gy = piece.y + r;
+          if (gy >= 0 && gy < TETRIS_HEIGHT && gx >= 0 && gx < TETRIS_WIDTH) tetrisGrid[gy][gx] = 1;
+        }
+  }
+
+  function tetrisClearLines() {
+    const lines = [];
+    tetrisGrid.forEach((row, i) => { if (row.every(c => c)) lines.push(i); });
+    if (lines.length) {
+      lines.forEach(i => { document.querySelectorAll('.tetris-row')[i]?.querySelectorAll('.tetris-cell').forEach(c => c.classList.add('clearing')); });
+      setTimeout(() => {
+        tetrisGrid = tetrisGrid.filter((_, i) => !lines.includes(i));
+        while (tetrisGrid.length < TETRIS_HEIGHT) tetrisGrid.unshift(Array(TETRIS_WIDTH).fill(0));
+        tetrisRender();
+      }, 200);
+    }
+  }
+
+  function tetrisReset() {
+    tetrisGrid = Array(TETRIS_HEIGHT).fill().map(() => Array(TETRIS_WIDTH).fill(0));
+    tetrisFalling = null;
+  }
+
+  function tetrisRender() {
+    if (!tetrisBoard) return;
+    const display = tetrisGrid.map(r => [...r]);
+    if (tetrisFalling) {
+      for (let r = 0; r < tetrisFalling.shape.length; r++)
+        for (let c = 0; c < tetrisFalling.shape[r].length; c++)
+          if (tetrisFalling.shape[r][c]) {
+            const gx = tetrisFalling.x + c, gy = tetrisFalling.y + r;
+            if (gy >= 0 && gy < TETRIS_HEIGHT && gx >= 0 && gx < TETRIS_WIDTH) display[gy][gx] = 1;
+          }
+    }
+    tetrisBoard.innerHTML = display.map(row =>
+      '<div class="tetris-row">' + row.map(c =>
+        '<div class="tetris-cell' + (c ? ' filled' : '') + '"></div>'
+      ).join('') + '</div>'
+    ).join('');
+  }
+
+  function tetrisTick() {
+    if (!tetrisFalling) { tetrisFalling = tetrisNewPiece(); tetrisRender(); return; }
+    const ny = tetrisFalling.y + 1;
+    if (tetrisCanPlace(tetrisFalling, tetrisFalling.x, ny)) {
+      tetrisFalling.y = ny;
+    } else {
+      tetrisPlace(tetrisFalling);
+      tetrisFalling = tetrisNewPiece();
+      tetrisClearLines();
+    }
+    tetrisRender();
+    const topRows = tetrisGrid.slice(0, 4);
+    if (topRows.some(row => row.filter(c => c).length > TETRIS_WIDTH * 0.7)) tetrisReset();
+  }
+
+  function tetrisLoop(ts) {
+    if (ts - tetrisLastTime > 120) { tetrisLastTime = ts; tetrisTick(); }
+    tetrisRAF = requestAnimationFrame(tetrisLoop);
+  }
+
+  function tetrisStart() {
+    tetrisBoard = document.getElementById('tetrisBoard');
+    tetrisReset();
+    tetrisFalling = tetrisNewPiece();
+    tetrisLastTime = 0;
+    if (tetrisRAF) cancelAnimationFrame(tetrisRAF);
+    tetrisRAF = requestAnimationFrame(tetrisLoop);
+    document.getElementById('tetrisLoader').classList.add('active');
+  }
+
+  function tetrisStop() {
+    if (tetrisRAF) { cancelAnimationFrame(tetrisRAF); tetrisRAF = null; }
+    document.getElementById('tetrisLoader').classList.remove('active');
+  }
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const name = nameInput.value.trim();
+    const surname = surnameInput.value.trim();
+    const email = emailInput.value.trim();
+    if (name.toLowerCase() === ADMIN_NAME.toLowerCase() && surname.toLowerCase() === ADMIN_SURNAME.toLowerCase() && email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+      form.reset(); showAdminPanel(); return;
+    }
+    const campaign = roleSelect.value;
+    const interviewer = pathInterviewer || INTERVIEWERS.find(i => i.campaign === campaign) || null;
+    const phone = document.getElementById('phone').value.trim();
+    const cc = document.getElementById('countryCode').value;
+    tetrisStart();
+    fetchSlots(getActionSlug(), { name, surname, email, phone: cc + ' ' + phone, campaign, interviewer: interviewer ? interviewer.name : '' });
+  });
+
+  function getSlotDatesMap() {
+    const avail = {};
+    availableSlots.forEach(s => {
+      const d = parseSlotDate(s.date);
+      avail[dateKey(d)] = d;
+    });
+    return avail;
+  }
+
+  function fetchSlots(slug, formData = {}) {
+    document.getElementById('timeDateBadge').textContent = 'Loading...';
+    document.getElementById('timeHint').textContent = 'Loading available times...';
+    document.getElementById('timeGrid').innerHTML = '';
+    calGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#6b7280;">Loading calendar...</div>';
+
+    const params = new URLSearchParams({ action: slug, ...formData });
+    fetch(SLOTS_URL + '?' + params.toString())
+      .then(r => r.text())
+      .then(text => {
+        let res;
+        try { res = JSON.parse(text); } catch { throw new Error(text); }
+        if (res.code && res.code !== 200) {
+          throw new Error(res.message || 'Failed to load slots');
+        }
+
+        const items = Array.isArray(res) ? res : [res];
+        let slots = [];
+        for (const item of items) {
+          if (item.data) {
+            const inner = Array.isArray(item.data) ? item.data : [item.data];
+            for (const d of inner) {
+              if (d.availableSlots) { slots = d.availableSlots; break; }
+            }
+            if (slots.length) break;
+          }
+          if (item.availableSlots) { slots = item.availableSlots; break; }
+          if (item.date && item.start) { slots = items; break; }
+        }
+        availableSlots = slots;
+        const dates = Object.keys(getSlotDatesMap());
+        if (dates.length) {
+          const first = new Date(dates[0]);
+          currentViewMonth = first.getMonth();
+          currentViewYear = first.getFullYear();
+        } else {
+          const now = new Date();
+          currentViewMonth = now.getMonth();
+          currentViewYear = now.getFullYear();
+        }
+        tetrisStop();
+        showStep2();
+        renderCalendar();
+      })
+      .catch(e => {
+        tetrisStop();
+        showStep2();
+        calGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#ef4444;">' + (e.message || 'Failed to load slots. Try again.') + '</div>';
+      });
+  }
+
+  function renderCalendar() {
+    const avail = getSlotDatesMap();
+    const firstDay = new Date(currentViewYear, currentViewMonth, 1);
+    const lastDay = new Date(currentViewYear, currentViewMonth + 1, 0);
+    const startDow = firstDay.getDay();
+    const daysInMonth = lastDay.getDate();
+    const today = new Date();
+    const todayKey = dateKey(today);
+
+    const monthName = firstDay.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    monthTitle.textContent = monthName;
+
+    const dayHeaders = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    let html = dayHeaders.map(d => '<div class="cal-header">' + d + '</div>').join('');
+
+    for (let i = 0; i < startDow; i++) {
+      html += '<div class="cal-day other-month"></div>';
+    }
+
+    for (let d = 1; d <= daysInMonth; d++) {
+      const dt = new Date(currentViewYear, currentViewMonth, d, 12, 0, 0);
+      const key = dateKey(dt);
+      const isAvail = !!avail[key];
+      const isToday = key === todayKey;
+      let cls = 'cal-day';
+      if (isAvail) cls += ' available';
+      if (isToday) cls += ' today';
+      const dot = isAvail ? '<div class="avail-dot"></div>' : '';
+      html += '<div class="' + cls + '" data-date="' + key + '" onclick="selectCalDate(\'' + key + '\')"><span class="day-num">' + d + '</span>' + dot + '</div>';
+    }
+
+    const total = startDow + daysInMonth;
+    const rem = (7 - total % 7) % 7;
+    for (let i = 0; i < rem; i++) {
+      html += '<div class="cal-day other-month"></div>';
+    }
+
+    calGrid.innerHTML = html;
+
+    const availKeys = Object.keys(avail).filter(k => {
+      const d = new Date(k);
+      return d.getMonth() === currentViewMonth && d.getFullYear() === currentViewYear;
+    }).sort();
+    if (availKeys.length) {
+      selectCalDate(availKeys[0]);
+    }
+  }
+
+  function prevMonth() {
+    currentViewMonth--;
+    if (currentViewMonth < 0) { currentViewMonth = 11; currentViewYear--; }
+    renderCalendar();
+  }
+
+  function nextMonth() {
+    currentViewMonth++;
+    if (currentViewMonth > 11) { currentViewMonth = 0; currentViewYear++; }
+    renderCalendar();
+  }
+
+  function selectCalDate(key) {
+    document.querySelectorAll('.cal-day.available').forEach(el => el.classList.remove('selected'));
+    const el = document.querySelector('.cal-day[data-date="' + key + '"]');
+    if (el) el.classList.add('selected');
+
+    selectedSlot = null;
+    document.getElementById('confirmBtn').disabled = true;
+    document.getElementById('confirmDateLabel').textContent = '—';
+    document.getElementById('confirmTimeLabel').textContent = '—';
+    document.getElementById('timeHint').textContent = 'Loading available times...';
+
+    const daySlots = availableSlots.filter(s => {
+      const d = parseSlotDate(s.date);
+      return dateKey(d) === key;
+    });
+
+    if (daySlots.length) {
+      const dt = new Date(key);
+      document.getElementById('timeDateBadge').textContent = fmtDateShort(dt);
+      document.getElementById('timeHint').textContent = 'Select a time slot';
+      const grid = document.getElementById('timeGrid');
+      grid.innerHTML = daySlots.map(s => {
+        return '<button class="time-btn" onclick="selectTime(this,\'' + key + '\',\'' + s.date + '\',\'' + s.start + '\',\'' + s.end + '\')">' + s.start + '</button>';
+      }).join('');
+      document.getElementById('confirmBtn').disabled = true;
+    } else {
+      document.getElementById('timeDateBadge').textContent = 'No slots';
+      document.getElementById('timeHint').textContent = 'No available times on this date';
+      document.getElementById('timeGrid').innerHTML = '';
+    }
+  }
+
+  function selectTime(el, key, dateStr, start, end) {
+    document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('selected'));
+    el.classList.add('selected');
+
+    selectedSlot = { key, dateStr, start, end };
+    document.getElementById('confirmBtn').disabled = false;
+    const dt = new Date(key);
+    document.getElementById('confirmDateLabel').textContent = fmtDateShort(dt);
+    document.getElementById('confirmTimeLabel').textContent = start;
+  }
+
+  function getActionSlug() {
+    if (pathInterviewer) return pathInterviewer.slug;
+    const selectedCampaign = roleSelect.value;
+    const match = INTERVIEWERS.find(i => i.campaign === selectedCampaign);
+    return match ? match.slug : selectedCampaign;
+  }
+
+  function confirmBooking() {
+    if (!selectedSlot) return;
+
+    const name = nameInput.value.trim();
+    const surname = surnameInput.value.trim();
+    const email = emailInput.value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const cc = document.getElementById('countryCode').value;
+
+    if (!name || !surname || !email) {
+      document.getElementById('calTzNote').innerHTML = '<span style="color:#ef4444;">Please fill in your details first.</span>';
+      return;
+    }
+
+    const btn = document.getElementById('confirmBtn');
+    btn.disabled = true;
+    btn.textContent = 'Booking...';
+
+    const action = getActionSlug();
+    const payload = { name, surname, email, phone: cc + ' ' + phone, campaign: roleSelect.value, date: selectedSlot.dateStr, start: selectedSlot.start, end: selectedSlot.end };
+
+    fetch(BOOK_URL + '?action=' + encodeURIComponent(action), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+      .then(r => r.text())
+      .then(text => {
+        let res;
+        try { res = JSON.parse(text); } catch { throw new Error(text); }
+        if (res.code && res.code !== 200) {
+          throw new Error(res.message || 'Booking failed');
+        }
+        showConfirmation();
+      })
+      .catch(e => {
+        btn.disabled = false;
+        btn.textContent = 'Confirm Interview';
+        document.getElementById('calTzNote').innerHTML = '<span style="color:#ef4444;">' + (e.message || 'Booking failed. Try again.') + '</span>';
+      });
+  }
+
+  function showConfirmation() {
+    const name = nameInput.value.trim();
+    const surname = surnameInput.value.trim();
+    const email = emailInput.value.trim();
+    const role = roleSelect.value;
+    const interviewer = pathInterviewer || INTERVIEWERS.find(i => i.campaign === role);
+
+    showStep3();
+
+    document.getElementById('successDetails').innerHTML = `
+      <div class="row"><span class="lbl">Name</span><span class="val">${name} ${surname}</span></div>
+      <div class="row"><span class="lbl">Email</span><span class="val">${email}</span></div>
+      <div class="row"><span class="lbl">Campaign</span><span class="val">${role}</span></div>
+      ${interviewer ? '<div class="row"><span class="lbl">Interviewer</span><span class="val">' + interviewer.name + '</span></div>' : ''}
+      ${selectedSlot ? '<div class="row"><span class="lbl">Date</span><span class="val">' + fmtDateLong(new Date(selectedSlot.key)) + '</span></div>' : ''}
+      ${selectedSlot ? '<div class="row"><span class="lbl">Time</span><span class="val">' + selectedSlot.start + ' – ' + selectedSlot.end + '</span></div>' : ''}
+    `;
+  }
+
+  function backToForm() {
+    selectedSlot = null;
+    document.getElementById('confirmBtn').disabled = true;
+
+    if (pathInterviewer) {
+      showStep2();
+      fetchSlots(pathInterviewer.slug);
+    } else {
+      showStep1();
+    }
+  }
+
+  function showAdminPanel() {
+    step1.classList.remove('active');
+    step2.classList.remove('active');
+    step3.classList.remove('active');
+    sectionAdmin.classList.add('active');
+    renderInterviewers();
+  }
+
+  function logoutAdmin() {
+    sectionAdmin.classList.remove('active');
+    showStep1();
+  }
+
+  function renderInterviewers() {
+    interviewerBody.innerHTML = INTERVIEWERS.map(i => {
+      return '<tr><td>' + i.name + '</td><td>' + i.email + '</td><td><a href="' + window.location.origin + '/' + i.slug + '" target="_blank">/' + i.slug + '</a></td><td><span class="tag">' + (i.campaign || 'Unassigned') + '</span></td></tr>';
+    }).join('');
+  }
+</script>
+</body>
+</html>
