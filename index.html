@@ -1405,6 +1405,7 @@
 
   function applyProfile(i) {
     const initial = i.name.charAt(0).toUpperCase();
+    document.getElementById('formIntervieweName').textContent = i.name;
     document.getElementById('pfpAvatar').textContent = initial;
     document.getElementById('pfpName').textContent = i.name;
     document.getElementById('pfpRole').textContent = (i.campaign || 'Unassigned') + ' Team';
@@ -1464,6 +1465,8 @@
     if (!customRole.contains(e.target)) closeCustomSelect();
   });
 
+  initPathRouting();
+
   fetch(ROLE_URL).then(r => r.json()).then(res => {
     campaigns = res.data ?? res;
     roleSelect.innerHTML = '<option value="" disabled selected></option>';
@@ -1473,11 +1476,11 @@
       roleSelect.appendChild(o);
     });
     buildCustomMenu();
-    initPathRouting();
+    if (pathInterviewer) setRoleSelection(pathInterviewer.campaign);
   }).catch(() => {
     roleSelect.innerHTML = '<option value="" disabled selected></option>';
     buildCustomMenu();
-    initPathRouting();
+    if (pathInterviewer) setRoleSelection(pathInterviewer.campaign);
   });
 
   function showStep1() {
