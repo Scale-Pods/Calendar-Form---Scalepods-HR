@@ -1488,6 +1488,7 @@
   });
 
   function showStep1() {
+    document.getElementById('confirmBar').classList.remove('show');
     step1.classList.add('active');
     step2.classList.remove('active');
     step3.classList.remove('active');
@@ -1768,6 +1769,7 @@
 
     selectedSlot = null;
     document.getElementById('confirmBtn').disabled = true;
+    document.getElementById('confirmBar').classList.remove('show');
     document.getElementById('confirmDateLabel').textContent = '—';
     document.getElementById('confirmTimeLabel').textContent = '—';
     document.getElementById('timeHint').textContent = 'Loading available times...';
@@ -1799,6 +1801,7 @@
 
     selectedSlot = { key, dateStr, start, end };
     document.getElementById('confirmBtn').disabled = false;
+    document.getElementById('confirmBar').classList.add('show');
     const dt = new Date(key);
     document.getElementById('confirmDateLabel').textContent = fmtDateShort(dt);
     document.getElementById('confirmTimeLabel').textContent = start;
