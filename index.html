@@ -96,6 +96,7 @@
       gap: 32px;
       margin-bottom: 28px;
     }
+    #profileSection.hidden { display: none; }
     .profile-left {
       display: flex;
       align-items: center;
@@ -1089,12 +1090,12 @@
   <div class="form-card">
 
     <!-- Profile Section -->
-    <div class="profile-section">
+    <div class="profile-section" id="profileSection">
       <div class="profile-left">
-        <div class="profile-avatar">R</div>
+        <div class="profile-avatar" id="profileAvatar"></div>
         <div class="profile-info">
           <span class="profile-label">Interviewer</span>
-          <span class="profile-name" id="formIntervieweName">Raunak</span>
+          <span class="profile-name" id="formIntervieweName"></span>
           <span class="profile-subtitle">Looking forward to connecting with you.</span>
         </div>
       </div>
@@ -1378,6 +1379,7 @@
       applyProfile(pathInterviewer);
       showStep1();
     } else {
+      document.getElementById('profileSection').classList.add('hidden');
       const p = window.location.pathname.replace(/^\/+/, '').replace(/\/+$/, '');
       if (p) {
         const root = document.querySelector('.step.form-step');
@@ -1405,12 +1407,14 @@
 
   function applyProfile(i) {
     const initial = i.name.charAt(0).toUpperCase();
+    document.getElementById('profileAvatar').textContent = initial;
     document.getElementById('formIntervieweName').textContent = i.name;
     document.getElementById('pfpAvatar').textContent = initial;
     document.getElementById('pfpName').textContent = i.name;
     document.getElementById('pfpRole').textContent = (i.campaign || 'Unassigned') + ' Team';
     document.getElementById('sched2Avatar').textContent = initial;
     document.getElementById('sched2Name').textContent = i.name;
+    document.getElementById('profileSection').classList.remove('hidden');
     document.getElementById('profileBadge').classList.add('show');
     setRoleSelection(i.campaign);
   }
