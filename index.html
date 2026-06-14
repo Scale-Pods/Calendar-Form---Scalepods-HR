@@ -1115,15 +1115,6 @@
       <p class="subtitle">Select a convenient time slot to connect.</p>
     </div>
 
-    <!-- Profile Badge (path-based pages) -->
-    <div class="profile-badge" id="profileBadge">
-      <div class="pfp-avatar" id="pfpAvatar">A</div>
-      <div class="pfp-info">
-        <div class="pfp-name" id="pfpName">Adnan</div>
-        <div class="pfp-role" id="pfpRole">Sales Team</div>
-      </div>
-    </div>
-
     <!-- Form -->
     <form id="bookingForm" novalidate>
       <div class="form-grid">
@@ -1297,7 +1288,6 @@
     <h2>Booking Confirmed!</h2>
     <p class="subtitle">Your interview has been scheduled.</p>
     <div class="success-details" id="successDetails"></div>
-    <button class="btn-primary btn-success" onclick="backToForm()">Book Another →</button>
   </div>
 </div>
 
@@ -1409,13 +1399,9 @@
     const initial = i.name.charAt(0).toUpperCase();
     document.getElementById('profileAvatar').textContent = initial;
     document.getElementById('formIntervieweName').textContent = i.name;
-    document.getElementById('pfpAvatar').textContent = initial;
-    document.getElementById('pfpName').textContent = i.name;
-    document.getElementById('pfpRole').textContent = (i.campaign || 'Unassigned') + ' Team';
     document.getElementById('sched2Avatar').textContent = initial;
     document.getElementById('sched2Name').textContent = i.name;
     document.getElementById('profileSection').classList.remove('hidden');
-    document.getElementById('profileBadge').classList.add('show');
     setRoleSelection(i.campaign);
   }
 
