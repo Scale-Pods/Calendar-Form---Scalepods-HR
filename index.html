@@ -97,7 +97,6 @@
       margin-bottom: 28px;
     }
     #profileSection.hidden { display: none; }
-    #formCard.hidden { display: none; }
     .profile-left {
       display: flex;
       align-items: center;
@@ -1381,7 +1380,6 @@
       showStep1();
     } else {
       document.getElementById('profileSection').classList.add('hidden');
-      document.getElementById('formCard').classList.add('hidden');
       const p = window.location.pathname.replace(/^\/+/, '').replace(/\/+$/, '');
       if (p) {
         const root = document.querySelector('.step.form-step');
