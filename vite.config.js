@@ -1,24 +1,28 @@
 import { defineConfig, loadEnv } from 'vite';
 
+function proxyRule(envUrl) {
+  const url = new URL(envUrl);
+  return {
+    target: url.origin,
+    changeOrigin: true,
+    secure: false,
+    configure: (proxy) => {
+      proxy.on('proxyReq', (proxyReq) => {
+        proxyReq.path = url.pathname + url.search;
+      });
+    }
+  };
+}
+
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
-  const roleUrl = env.VITE_ROLE_URL;
-  const url = new URL(roleUrl);
-
   return {
     appType: 'spa',
     server: {
       proxy: {
-        '/api/campaigns': {
-          target: url.origin,
-          changeOrigin: true,
-          secure: false,
-          configure: (proxy) => {
-            proxy.on('proxyReq', (proxyReq) => {
-              proxyReq.path = url.pathname + url.search;
-            });
-          }
-        }
+        '/api/campaigns': proxyRule(env.VITE_ROLE_URL),
+        '/api/slots': proxyRule(env.VITE_SLOTS_URL),
+        '/api/book': proxyRule(env.VITE_BOOK_URL),
       }
     }
   };
