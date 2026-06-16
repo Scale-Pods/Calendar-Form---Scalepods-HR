@@ -6,13 +6,73 @@
   <title>ScalePods — Schedule Your Interview</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg: #050816;
+      --card-bg: rgba(13,17,23,0.65);
+      --card-bg-solid: rgba(13,17,23,0.55);
+      --card-bg-panel: rgba(13,17,23,0.45);
+      --card-border: rgba(60,70,100,0.2);
+      --card-border-soft: rgba(60,80,120,0.12);
+      --card-border-strong: rgba(60,80,120,0.15);
+      --text-primary: #e6edf3;
+      --text-secondary: #f0f4f8;
+      --text-muted: #6b7280;
+      --text-dim: #4b5563;
+      --text-bright: #94a3b8;
+      --input-bg: rgba(18,24,34,0.6);
+      --input-bg-focus: rgba(13,17,23,0.7);
+      --menu-bg: rgba(18,24,36,0.96);
+      --menu-border: rgba(60,80,120,0.3);
+      --glow-opacity: 1;
+      --logo-filter: brightness(0) invert(1);
+      --admin-badge-bg: rgba(26,45,74,0.85);
+      --admin-badge-border: rgba(59,130,246,0.4);
+      --success-check-bg: rgba(34,197,94,0.1);
+      --heading-gradient: linear-gradient(135deg, #f0f4f8, #94a3b8);
+      --badge-bg: rgba(31,36,41,0.3);
+      --badge-border: rgba(31,36,41,0.5);
+      --row-separator: rgba(31,36,41,0.3);
+      --tag-bg: rgba(31,36,41,0.5);
+      --success-details-bg: rgba(31,36,41,0.2);
+      --table-border: rgba(31,36,41,0.5);
+    }
+    [data-theme="light"] {
+      --bg: #f0f4f8;
+      --card-bg: rgba(255,255,255,0.85);
+      --card-bg-solid: rgba(255,255,255,0.8);
+      --card-bg-panel: rgba(255,255,255,0.75);
+      --card-border: rgba(0,0,0,0.08);
+      --card-border-soft: rgba(0,0,0,0.06);
+      --card-border-strong: rgba(0,0,0,0.1);
+      --text-primary: #1f2937;
+      --text-secondary: #111827;
+      --text-muted: #6b7280;
+      --text-dim: #9ca3af;
+      --text-bright: #4b5563;
+      --input-bg: rgba(255,255,255,0.7);
+      --input-bg-focus: rgba(255,255,255,0.9);
+      --menu-bg: rgba(255,255,255,0.98);
+      --menu-border: rgba(0,0,0,0.12);
+      --glow-opacity: 0;
+      --logo-filter: none;
+      --admin-badge-bg: rgba(59,130,246,0.15);
+      --admin-badge-border: rgba(59,130,246,0.3);
+      --success-check-bg: rgba(34,197,94,0.15);
+      --heading-gradient: linear-gradient(135deg, #1f2937, #4b5563);
+      --badge-bg: rgba(0,0,0,0.03);
+      --badge-border: rgba(0,0,0,0.08);
+      --row-separator: rgba(0,0,0,0.06);
+      --tag-bg: rgba(0,0,0,0.04);
+      --success-details-bg: rgba(0,0,0,0.02);
+      --table-border: rgba(0,0,0,0.08);
+    }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       min-height: 100vh;
-      background: #050816;
+      background: var(--bg);
       position: relative;
-      color: #e6edf3;
+      color: var(--text-primary);
       overflow-x: hidden;
     }
 
@@ -34,6 +94,7 @@
       inset: 0;
       z-index: 0;
       pointer-events: none;
+      opacity: var(--glow-opacity);
       background:
         radial-gradient(ellipse 800px 500px at 30% 25%, rgba(37,99,235,0.12) 0%, transparent 60%),
         radial-gradient(ellipse 600px 400px at 70% 40%, rgba(99,102,241,0.08) 0%, transparent 60%),
@@ -65,7 +126,7 @@
     .logo-top {
       height: 36px;
       width: auto;
-      filter: brightness(0) invert(1);
+      filter: var(--logo-filter);
       opacity: 0.9;
       display: block;
       margin: 0 auto 36px;
@@ -74,10 +135,10 @@
     .form-card {
       width: 100%;
       max-width: 900px;
-      background: rgba(13,17,23,0.65);
+      background: var(--card-bg);
       backdrop-filter: blur(28px);
       -webkit-backdrop-filter: blur(28px);
-      border: 1px solid rgba(60,70,100,0.2);
+      border: 1px solid var(--card-border);
       border-radius: 24px;
       box-shadow:
         0 4px 6px -1px rgba(0,0,0,0.3),
@@ -135,18 +196,18 @@
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 1px;
-      color: #6b7280;
+      color: var(--text-muted);
       font-weight: 600;
     }
     .profile-name {
       font-size: 20px;
       font-weight: 700;
-      color: #f0f4f8;
+      color: var(--text-secondary);
       letter-spacing: -0.3px;
     }
     .profile-subtitle {
       font-size: 14px;
-      color: #6b7280;
+      color: var(--text-muted);
       font-weight: 400;
     }
     .profile-right {
@@ -182,13 +243,13 @@
       font-weight: 700;
       letter-spacing: -0.5px;
       margin-bottom: 6px;
-      background: linear-gradient(135deg, #f0f4f8, #94a3b8);
+      background: var(--heading-gradient);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
     .form-header .subtitle {
-      color: #6b7280;
+      color: var(--text-muted);
       font-size: 15px;
       margin-bottom: 32px;
       line-height: 1.5;
@@ -199,8 +260,8 @@
       display: none;
       align-items: center;
       gap: 14px;
-      background: rgba(31,36,41,0.3);
-      border: 1px solid rgba(31,36,41,0.5);
+      background: var(--badge-bg);
+      border: 1px solid var(--badge-border);
       border-radius: 14px;
       padding: 16px 18px;
       margin-bottom: 24px;
@@ -214,7 +275,7 @@
       box-shadow: 0 0 0 2px rgba(59,130,246,0.2);
     }
     .pfp-info { flex: 1; min-width: 0; }
-    .pfp-name { font-size: 15px; font-weight: 600; color: #e6edf3; }
+    .pfp-name { font-size: 15px; font-weight: 600; color: var(--text-primary); }
     .pfp-role { display: none; }
 
     /* --- Two-Column Form --- */
@@ -241,10 +302,10 @@
       width: 100%; height: 64px;
       padding: 20px 44px 0 54px;
       font-size: 15px; font-family: inherit;
-      border: 1px solid rgba(60,70,100,0.2);
+      border: 1px solid var(--card-border);
       border-radius: 14px; outline: none;
-      background: rgba(18,24,34,0.6);
-      color: #e6edf3;
+      background: var(--input-bg);
+      color: var(--text-primary);
       transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
       box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
     }
@@ -252,17 +313,17 @@
     .input-group input:focus, .input-group select:focus {
       border-color: #3b82f6;
       box-shadow: 0 0 0 3px rgba(59,130,246,0.12), inset 0 2px 4px rgba(0,0,0,0.2);
-      background: rgba(13,17,23,0.7);
+      background: var(--input-bg-focus);
     }
 
     .input-group label {
       position: absolute; left: 54px; top: 50%; transform: translateY(-50%);
-      font-size: 15px; color: #6b7280; pointer-events: none;
+      font-size: 15px; color: var(--text-muted); pointer-events: none;
       transition: all 0.2s ease; z-index: 1;
     }
     .input-group input:focus ~ label, .input-group input:not(:placeholder-shown) ~ label,
     .input-group.has-value label, .input-group:focus-within label {
-      top: 12px; transform: translateY(0); font-size: 11px; color: #6b7280;
+      top: 12px; transform: translateY(0); font-size: 11px; color: var(--text-muted);
     }
     .input-group input:focus ~ label { color: #3b82f6; }
     .input-group:focus-within label { color: #3b82f6; }
@@ -271,9 +332,14 @@
     .input-group input:-webkit-autofill:hover,
     .input-group input:-webkit-autofill:focus {
       -webkit-box-shadow: 0 0 0 1000px rgba(18,24,34,0.9) inset !important;
-      -webkit-text-fill-color: #e6edf3 !important;
-      caret-color: #e6edf3;
-      border: 1px solid rgba(60,70,100,0.3);
+      -webkit-text-fill-color: var(--text-primary) !important;
+      caret-color: var(--text-primary);
+      border: 1px solid var(--card-border);
+    }
+    [data-theme="light"] .input-group input:-webkit-autofill,
+    [data-theme="light"] .input-group input:-webkit-autofill:hover,
+    [data-theme="light"] .input-group input:-webkit-autofill:focus {
+      -webkit-box-shadow: 0 0 0 1000px rgba(255,255,255,0.9) inset !important;
     }
 
     /* Phone row adjustment */
@@ -285,19 +351,19 @@
     .phone-row > select {
       width: 100%; height: 64px;
       padding: 0 8px 0 14px;
-      border: 1px solid rgba(60,70,100,0.2);
+      border: 1px solid var(--card-border);
       border-right: none;
       border-radius: 14px 0 0 14px;
       font-size: 14px; font-family: inherit; cursor: pointer;
-      background: rgba(18,24,34,0.6);
-      color: #e6edf3; outline: none;
+      background: var(--input-bg);
+      color: var(--text-primary); outline: none;
       transition: border-color 0.25s;
       box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
     }
     .phone-row select:focus { border-color: #3b82f6; }
     .phone-row select option {
       background: #0d1123;
-      color: #e6edf3;
+      color: var(--text-primary);
     }
     .phone-row .input-group { flex: 1; }
     .phone-row .input-group input {
@@ -309,7 +375,7 @@
 
     .input-group select option {
       background: #0d1123;
-      color: #e6edf3;
+      color: var(--text-primary);
     }
 
     /* --- Custom Role Select --- */
@@ -322,17 +388,17 @@
       width: 100%; height: 64px;
       padding: 20px 44px 0 54px;
       font-size: 15px; font-family: inherit; cursor: pointer;
-      border: 1px solid rgba(60,70,100,0.2);
+      border: 1px solid var(--card-border);
       border-radius: 14px; outline: none;
-      background: rgba(18,24,34,0.6);
-      color: #e6edf3;
+      background: var(--input-bg);
+      color: var(--text-primary);
       box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
       transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
       user-select: none;
     }
     .input-group .custom-select-trigger .value {
       flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-      color: #e6edf3;
+      color: var(--text-primary);
     }
     .input-group .custom-select-trigger .value.placeholder { color: transparent; }
     .input-group .custom-select-trigger .arrow {
@@ -342,17 +408,17 @@
     .input-group .custom-select.open .custom-select-trigger {
       border-color: #3b82f6;
       box-shadow: 0 0 0 3px rgba(59,130,246,0.12), inset 0 2px 4px rgba(0,0,0,0.2);
-      background: rgba(13,17,23,0.7);
+      background: var(--input-bg-focus);
     }
     .input-group .custom-select.open .custom-select-trigger .arrow { transform: rotate(180deg); }
     .input-group .custom-select-trigger:hover { border-color: rgba(59,130,246,0.4); }
 
     .input-group .custom-select-menu {
       position: absolute; top: calc(100% + 6px); left: 0; right: 0;
-      background: rgba(18,24,36,0.96);
+      background: var(--menu-bg);
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
-      border: 1px solid rgba(60,80,120,0.3);
+      border: 1px solid var(--menu-border);
       border-radius: 14px;
       box-shadow: 0 16px 48px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.03) inset;
       overflow: hidden;
@@ -368,7 +434,7 @@
     }
     .input-group .custom-select-menu .opt {
       padding: 14px 16px 14px 54px;
-      font-size: 14px; color: #d0d5dd; cursor: pointer;
+      font-size: 14px; color: var(--text-bright); cursor: pointer;
       transition: background 0.12s ease, color 0.12s ease;
       display: flex; align-items: center; gap: 10px;
       position: relative;
@@ -379,8 +445,8 @@
       opacity: 0; transition: opacity 0.15s ease;
     }
     .input-group .custom-select-menu .opt.selected .check { opacity: 1; }
-    .input-group .custom-select-menu .opt:hover { background: rgba(59,130,246,0.12); color: #e6edf3; }
-    .input-group .custom-select-menu .opt.selected { color: #e6edf3; font-weight: 500; }
+    .input-group .custom-select-menu .opt:hover { background: rgba(59,130,246,0.12); color: var(--text-primary); }
+    .input-group .custom-select-menu .opt.selected { color: var(--text-primary); font-weight: 500; }
     .input-group .custom-select-menu::-webkit-scrollbar { width: 4px; }
     .input-group .custom-select-menu::-webkit-scrollbar-track { background: transparent; }
     .input-group .custom-select-menu::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 2px; }
@@ -412,9 +478,9 @@
       gap: 8px;
       margin-top: 24px;
       font-size: 12px;
-      color: #4b5563;
+      color: var(--text-dim);
     }
-    .secure-footer svg { width: 14px; height: 14px; color: #4b5563; flex-shrink: 0; }
+    .secure-footer svg { width: 14px; height: 14px; color: var(--text-dim); flex-shrink: 0; }
 
     /* ===== STEP 2 — World-Class Scheduling ===== */
     .calendar-step.active {
@@ -442,7 +508,7 @@
       justify-content: space-between;
       padding: 20px 0 12px;
       font-size: 12px;
-      color: #4b5563;
+      color: var(--text-dim);
       letter-spacing: 0.3px;
     }
     .sched-progress .step-label {
@@ -483,16 +549,16 @@
     .sched2-logo img {
       height: 28px;
       width: auto;
-      filter: brightness(0) invert(1);
+      filter: var(--logo-filter);
       opacity: 0.65;
     }
 
     /* Interviewer Hero */
     .interviewer-hero {
-      background: rgba(13,17,23,0.55);
+      background: var(--card-bg-solid);
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
-      border: 1px solid rgba(60,80,120,0.15);
+      border: 1px solid var(--card-border-strong);
       border-radius: 20px;
       padding: 24px 28px;
       display: flex;
@@ -530,10 +596,10 @@
     .interviewer-hero-info { display: flex; flex-direction: column; gap: 2px; }
     .interviewer-hero-info .label {
       font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px;
-      color: #6b7280; font-weight: 600;
+      color: var(--text-muted); font-weight: 600;
     }
     .interviewer-hero-info .name {
-      font-size: 18px; font-weight: 700; color: #f0f4f8; letter-spacing: -0.2px;
+      font-size: 18px; font-weight: 700; color: var(--text-secondary); letter-spacing: -0.2px;
     }
     .interviewer-hero-info .status {
       font-size: 12px; color: #22c55e; display: flex; align-items: center; gap: 4px;
@@ -543,7 +609,7 @@
       display: flex; flex-direction: column; align-items: flex-end; gap: 8px;
     }
     .interviewer-hero-right .tagline {
-      color: #6b7280; font-size: 13px;
+      color: var(--text-muted); font-size: 13px;
     }
 
     /* Info Chips */
@@ -559,9 +625,9 @@
       gap: 5px;
       padding: 5px 12px;
       background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(60,80,120,0.12);
+      border: 1px solid var(--card-border-soft);
       border-radius: 20px;
-      color: #94a3b8;
+      color: var(--text-bright);
       font-size: 12px;
       font-weight: 500;
       white-space: nowrap;
@@ -579,10 +645,10 @@
 
     /* Calendar Card */
     .cal-card {
-      background: rgba(13,17,23,0.45);
+      background: var(--card-bg-panel);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(60,80,120,0.12);
+      border: 1px solid var(--card-border-soft);
       border-radius: 20px;
       padding: 28px 28px 24px;
       box-shadow: 0 4px 24px rgba(0,0,0,0.15);
@@ -597,7 +663,7 @@
     }
     .cal-card .month-nav h2 {
       font-size: 18px; font-weight: 700; letter-spacing: -0.2px;
-      background: linear-gradient(135deg, #f0f4f8, #94a3b8);
+      background: var(--heading-gradient);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -605,9 +671,9 @@
     .cal-card .nav-btns { display: flex; gap: 6px; }
     .cal-card .nav-btns button {
       width: 34px; height: 34px; border-radius: 10px;
-      border: 1px solid rgba(60,80,120,0.12);
+      border: 1px solid var(--card-border-soft);
       background: rgba(255,255,255,0.03);
-      color: #6b7280; cursor: pointer; font-size: 16px;
+      color: var(--text-muted); cursor: pointer; font-size: 16px;
       display: flex; align-items: center; justify-content: center;
       transition: all 0.2s;
     }
@@ -629,7 +695,7 @@
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.6px;
-      color: #4b5563;
+      color: var(--text-dim);
       padding: 8px 0 6px;
     }
     .cal-day {
@@ -641,15 +707,15 @@
       justify-content: center;
       font-size: 14px;
       font-weight: 500;
-      color: #374151;
+      color: var(--text-dim);
       cursor: default;
       transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
       gap: 1px;
     }
-    .cal-day.other-month { color: #1f2937; }
+    .cal-day.other-month { color: var(--text-dim); }
     .cal-day.available {
-      color: #e2e8f0;
+      color: var(--text-primary);
       cursor: pointer;
     }
     .cal-day.available:hover {
@@ -676,7 +742,7 @@
 
     .cal-tz-note {
       font-size: 11px;
-      color: #4b5563;
+      color: var(--text-dim);
       text-align: center;
       padding: 6px 12px;
       background: rgba(255,255,255,0.02);
@@ -686,10 +752,10 @@
 
     /* Time Slots Panel */
     .time-panel {
-      background: rgba(13,17,23,0.45);
+      background: var(--card-bg-panel);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(60,80,120,0.12);
+      border: 1px solid var(--card-border-soft);
       border-radius: 20px;
       padding: 24px 20px;
       box-shadow: 0 4px 24px rgba(0,0,0,0.15);
@@ -707,11 +773,11 @@
     .time-panel-header .time-date-badge {
       font-size: 13px;
       font-weight: 600;
-      color: #e2e8f0;
+      color: var(--text-primary);
     }
     .time-panel-header .time-hint {
       font-size: 12px;
-      color: #6b7280;
+      color: var(--text-muted);
     }
 
     .time-grid {
@@ -729,9 +795,9 @@
     .time-btn {
       height: 48px;
       border-radius: 12px;
-      border: 1px solid rgba(60,80,120,0.12);
+      border: 1px solid var(--card-border-soft);
       background: rgba(255,255,255,0.02);
-      color: #94a3b8;
+      color: var(--text-bright);
       font-size: 14px;
       font-family: inherit;
       font-weight: 500;
@@ -741,7 +807,7 @@
     }
     .time-btn:hover {
       border-color: rgba(59,130,246,0.35);
-      color: #e2e8f0;
+      color: var(--text-primary);
       background: rgba(59,130,246,0.07);
       transform: translateY(-1px);
     }
@@ -758,7 +824,7 @@
       margin-top: 8px;
     }
     .sched2-back {
-      background: none; border: none; color: #4b5563;
+      background: none; border: none; color: var(--text-dim);
       font-size: 12px; font-family: inherit; cursor: pointer;
       display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px;
       transition: color 0.2s, gap 0.2s;
@@ -776,7 +842,7 @@
       background: rgba(8,12,20,0.88);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      border-top: 1px solid rgba(60,80,120,0.15);
+      border-top: 1px solid var(--card-border-strong);
       padding: 16px 24px;
       display: none;
       align-items: center;
@@ -805,10 +871,10 @@
     }
     .sched2-confirm .confirm-info .confirm-icon svg { width: 18px; height: 18px; }
     .sched2-confirm .confirm-info .confirm-text {
-      font-size: 13px; color: #94a3b8;
+      font-size: 13px; color: var(--text-bright);
     }
     .sched2-confirm .confirm-info .confirm-text strong {
-      color: #e2e8f0; font-weight: 600;
+      color: var(--text-primary); font-weight: 600;
     }
     .sched2-confirm .confirm-actions {
       display: flex;
@@ -828,7 +894,7 @@
     .btn-confirm:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(99,102,241,0.4); }
     .btn-confirm:disabled { opacity: 0.3; cursor: not-allowed; transform: none !important; }
     .btn-skip {
-      background: none; border: none; color: #4b5563;
+      background: none; border: none; color: var(--text-dim);
       font-size: 12px; font-family: inherit; cursor: pointer;
       padding: 8px 12px; border-radius: 8px;
       transition: color 0.2s; white-space: nowrap;
@@ -849,10 +915,10 @@
     .success-card {
       width: 100%;
       max-width: 480px;
-      background: rgba(13,17,23,0.65);
+      background: var(--card-bg);
       backdrop-filter: blur(28px);
       -webkit-backdrop-filter: blur(28px);
-      border: 1px solid rgba(60,70,100,0.2);
+      border: 1px solid var(--card-border);
       border-radius: 24px;
       box-shadow:
         0 4px 6px -1px rgba(0,0,0,0.3),
@@ -865,7 +931,7 @@
 
     .check-circle {
       width: 72px; height: 72px; border-radius: 50%; margin: 0 auto 20px;
-      background: rgba(34,197,94,0.1);
+      background: var(--success-check-bg);
       display: flex; align-items: center; justify-content: center;
       animation: scaleIn 0.4s ease-out;
       box-shadow: 0 0 40px rgba(34,197,94,0.08);
@@ -874,16 +940,16 @@
 
     .success-card h2 {
       font-size: 24px; font-weight: 700; margin-bottom: 4px;
-      background: linear-gradient(135deg, #f0f4f8, #94a3b8);
+      background: var(--heading-gradient);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
-    .success-card .subtitle { color: #6b7280; font-size: 14px; margin-bottom: 0; }
+    .success-card .subtitle { color: var(--text-muted); font-size: 14px; margin-bottom: 0; }
 
     .success-details {
       margin: 24px auto 0;
-      background: rgba(31,36,41,0.2);
+      background: var(--success-details-bg);
       border: 1px solid rgba(60,70,100,0.15);
       border-radius: 16px;
       padding: 20px;
@@ -891,11 +957,11 @@
     }
     .success-details .row {
       display: flex; justify-content: space-between; align-items: center;
-      padding: 10px 0; border-bottom: 1px solid rgba(31,36,41,0.3);
+      padding: 10px 0; border-bottom: 1px solid var(--row-separator);
     }
     .success-details .row:last-child { border-bottom: none; }
-    .success-details .lbl { font-size: 13px; color: #6b7280; }
-    .success-details .val { font-size: 14px; color: #e6edf3; font-weight: 500; text-align: right; }
+    .success-details .lbl { font-size: 13px; color: var(--text-muted); }
+    .success-details .val { font-size: 14px; color: var(--text-primary); font-weight: 500; text-align: right; }
 
     .btn-success { margin-top: 24px; }
 
@@ -914,10 +980,10 @@
     .admin-card {
       width: 100%;
       max-width: 780px;
-      background: rgba(13,17,23,0.65);
+      background: var(--card-bg);
       backdrop-filter: blur(28px);
       -webkit-backdrop-filter: blur(28px);
-      border: 1px solid rgba(60,70,100,0.2);
+      border: 1px solid var(--card-border);
       border-radius: 24px;
       box-shadow:
         0 4px 6px -1px rgba(0,0,0,0.3),
@@ -935,17 +1001,44 @@
     .admin-header h2 { font-size: 20px; font-weight: 700; }
 
     table { width: 100%; border-collapse: collapse; }
-    th, td { text-align: left; padding: 12px 14px; border-bottom: 1px solid rgba(31,36,41,0.5); color: #d1d5db; font-size: 13px; }
-    th { color: #6b7280; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+    th, td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--table-border); color: var(--text-primary); font-size: 13px; }
+    th { color: var(--text-muted); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
     td a { color: #3b82f6; text-decoration: none; }
     td a:hover { text-decoration: underline; }
-    .tag { display: inline-block; padding: 3px 10px; background: rgba(31,36,41,0.5); border-radius: 4px; font-size: 12px; color: #9ca3af; }
+    .tag { display: inline-block; padding: 3px 10px; background: var(--tag-bg); border-radius: 4px; font-size: 12px; color: var(--text-bright); }
     .btn-sm {
       width: auto; padding: 8px 16px; font-size: 13px; font-weight: 600; font-family: inherit;
       color: #fff; background: transparent; border: 1px solid rgba(60,70,100,0.3);
       border-radius: 10px; cursor: pointer; transition: all 0.2s;
     }
     .btn-sm:hover { background: rgba(255,255,255,0.06); border-color: #3b82f6; }
+
+    .theme-toggle {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 101;
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      border: 1px solid var(--card-border-soft);
+      background: var(--card-bg-panel);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      color: var(--text-bright);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.25s ease;
+      font-size: 18px;
+    }
+    .theme-toggle:hover {
+      border-color: rgba(59,130,246,0.4);
+      color: #93c5fd;
+      transform: scale(1.05);
+    }
+    .theme-toggle svg { width: 20px; height: 20px; }
+    .admin-badge.show + .theme-toggle { right: 68px; }
 
     .admin-badge {
       position: fixed;
@@ -954,10 +1047,10 @@
       display: none;
       align-items: center;
       gap: 10px;
-      background: rgba(26,45,74,0.85);
+      background: var(--admin-badge-bg);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(59,130,246,0.4);
+      border: 1px solid var(--admin-badge-border);
       border-radius: 10px;
       padding: 8px 16px;
       z-index: 100;
@@ -978,7 +1071,7 @@
       position: fixed;
       inset: 0;
       z-index: 200;
-      background: #050816;
+      background: var(--bg);
       align-items: center;
       justify-content: center;
       flex-direction: column;
@@ -1013,7 +1106,7 @@
       100% { background: transparent; }
     }
     .tetris-loader-text {
-      color: #6b7280;
+      color: var(--text-muted);
       font-size: 14px;
       font-weight: 500;
       animation: tetrisPulse 1.5s ease-in-out infinite;
@@ -1083,6 +1176,11 @@
   <span>Admin</span>
   <button onclick="showAdminPanel()">Panel</button>
 </div>
+
+<button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle theme">
+  <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+  <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
 
 <!-- ===== STEP 1 — Premium Form ===== -->
 <div class="step form-step" id="step1">
@@ -1156,7 +1254,7 @@
           <select id="role" required style="display:none"><option value="" disabled selected></option></select>
           <div class="custom-select" id="customRoleSelect" tabindex="0">
             <div class="custom-select-trigger">
-              <span class="value placeholder"></span>
+              <span class="value placeholder">Choose Role</span>
               <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
             </div>
             <div class="custom-select-menu" id="customRoleMenu"></div>
@@ -1389,7 +1487,7 @@
     const trigger = document.querySelector('.custom-select-trigger .value');
     const items = document.querySelectorAll('.custom-select-menu .opt');
     const opt = Array.from(roleSelect.options).find(o => o.value === value);
-    trigger.textContent = opt ? opt.textContent : (value || '');
+    trigger.textContent = opt ? opt.textContent : (value || 'Choose Role');
     trigger.classList.toggle('placeholder', !value);
     items.forEach(el => el.classList.toggle('selected', el.dataset.value === value));
     document.getElementById('roleGroup').classList.toggle('has-value', !!value);
@@ -1402,7 +1500,6 @@
     document.getElementById('sched2Avatar').textContent = initial;
     document.getElementById('sched2Name').textContent = i.name;
     document.getElementById('profileSection').classList.remove('hidden');
-    setRoleSelection(i.campaign);
   }
 
   function checkAdmin() {
@@ -1414,6 +1511,22 @@
   nameInput.addEventListener('input', checkAdmin);
   surnameInput.addEventListener('input', checkAdmin);
   emailInput.addEventListener('input', checkAdmin);
+
+  function toggleTheme() {
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    const theme = isLight ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('scalePodsTheme', theme);
+    document.getElementById('themeToggle').querySelector('.sun-icon').style.display = isLight ? '' : 'none';
+    document.getElementById('themeToggle').querySelector('.moon-icon').style.display = isLight ? 'none' : '';
+  }
+
+  (function initTheme() {
+    const saved = localStorage.getItem('scalePodsTheme') || 'light';
+    document.documentElement.setAttribute('data-theme', saved);
+    document.getElementById('themeToggle').querySelector('.sun-icon').style.display = saved === 'light' ? '' : 'none';
+    document.getElementById('themeToggle').querySelector('.moon-icon').style.display = saved === 'light' ? 'none' : '';
+  })();
 
   const customRole = document.getElementById('customRoleSelect');
   const customMenu = document.getElementById('customRoleMenu');
@@ -1466,11 +1579,9 @@
       roleSelect.appendChild(o);
     });
     buildCustomMenu();
-    if (pathInterviewer) setRoleSelection(pathInterviewer.campaign);
   }).catch(() => {
     roleSelect.innerHTML = '<option value="" disabled selected></option>';
     buildCustomMenu();
-    if (pathInterviewer) setRoleSelection(pathInterviewer.campaign);
   });
 
   function showStep1() {
@@ -1630,7 +1741,7 @@
 
   function getSlotDatesMap() {
     const avail = {};
-    availableSlots.forEach(s => {
+    availableSlots.filter(s => !isSlotPast(s)).forEach(s => {
       const d = parseSlotDate(s.date);
       avail[dateKey(d)] = d;
     });
@@ -1748,8 +1859,15 @@
     renderCalendar();
   }
 
+  function isSlotPast(slot) {
+    const p = slot.date.split('/');
+    const [h, m] = slot.start.split(':');
+    const slotUTC = Date.UTC(+p[2], +p[1] - 1, +p[0], +h, +m) - 5.5 * 60 * 60 * 1000;
+    return slotUTC < Date.now();
+  }
+
   function selectCalDate(key) {
-    document.querySelectorAll('.cal-day.available').forEach(el => el.classList.remove('selected'));
+    document.querySelectorAll('.cal-day').forEach(el => el.classList.remove('selected'));
     const el = document.querySelector('.cal-day[data-date="' + key + '"]');
     if (el) el.classList.add('selected');
 
@@ -1762,7 +1880,7 @@
 
     const daySlots = availableSlots.filter(s => {
       const d = parseSlotDate(s.date);
-      return dateKey(d) === key;
+      return dateKey(d) === key && !isSlotPast(s);
     });
 
     if (daySlots.length) {
