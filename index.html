@@ -1577,7 +1577,7 @@
   fetch(ROLE_URL).then(r => r.json()).then(res => {
     campaigns = res.data ?? res;
     roleSelect.innerHTML = '<option value="" disabled selected></option>';
-    campaigns.forEach(c => {
+    campaigns.filter(c => c.Status === 'on').forEach(c => {
       const o = document.createElement('option');
       o.value = c.CampaignName; o.textContent = c.CampaignName;
       roleSelect.appendChild(o);
